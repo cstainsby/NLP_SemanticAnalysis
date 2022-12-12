@@ -1,4 +1,6 @@
 
+import numpy as np
+
 def find_frequency_of_each_element_in_list(input_list):
     """finds each unique value and the frequency of that value
 

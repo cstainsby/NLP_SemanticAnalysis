@@ -1,3 +1,8 @@
+
+import math 
+
+import utils
+
 def train_test_split(X, y, test_size=0.33, random_state=None, shuffle=True):
     """Split dataset into train and test sets based on a test set size.
 
@@ -33,7 +38,7 @@ def train_test_split(X, y, test_size=0.33, random_state=None, shuffle=True):
     index_list = []
 
     if shuffle:
-        index_list = myutils.randomized_index_list(len(y), random_state)
+        index_list = utils.randomized_index_list(len(y), random_state)
     else:
         index_list = [i for i in range(len(y))]
     
@@ -49,4 +54,5 @@ def train_test_split(X, y, test_size=0.33, random_state=None, shuffle=True):
             # while in test range, add to test list
             X_test.append(X[index])
             y_test.append(y[index])
-            
+    
+    return X_train, X_test, y_train, y_test
