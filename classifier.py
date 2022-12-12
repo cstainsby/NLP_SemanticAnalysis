@@ -2,11 +2,57 @@
 import math
 import numpy as np
 import utils
+from collections import Counter, defaultdict
 
 
 # from mysklearn import myevaluation, myutils
 # from mysklearn.mysimplelinearregressor import MySimpleLinearRegressor
 # import mysklearn
+
+
+def train_naive_bayes(bag_of_words_pos, bag_of_words_neg):
+  priors = {
+    0: 0.5,
+    1: 0.5
+  }
+
+  likelihoods = {}
+  # {word: {class: prob}} 
+
+  unique_words = list(set(bag_of_words_pos))
+  for unique_word in unique_words:
+    likelihoods[unique_word] = {}
+    count_of_unique_word = bag_of_words_pos.count(unique_word)
+    likelihoods[unique_word][1] = count_of_unique_word / len(bag_of_words_pos)
+
+  unique_words = list(set(bag_of_words_neg))
+  for unique_word in unique_words:
+    if unique_word not in likelihoods:
+      likelihoods[unique_word] = {}
+
+    count_of_unique_word = bag_of_words_neg.count(unique_word)
+    likelihoods[unique_word][0] = count_of_unique_word / len(bag_of_words_neg)
+
+  return priors, likelihoods
+
+def predict_naive_bayes(priors, likelihoods, test):
+  predictions = []
+
+  class_labels = list(priors.keys())
+  for test_item in test:
+    
+    sum = [0 for i in range(len(priors))]
+    for i, class_label in enumerate(class_labels):
+      sum[i] = priors[class_label]
+      for word in test_item:
+        if word in likelihoods: 
+          if class_label in likelihoods[word]:
+              sum[class_label] += likelihoods[word][class_label]
+
+    predictions.append(sum.index(max(sum)))
+          
+  return predictions
+
 
 class NaiveBayesClassifier:
     """Represents a Naive Bayes classifier.
@@ -50,6 +96,7 @@ class NaiveBayesClassifier:
         # set priors -- count the number of each class and divide by total instances
         freq_dict = {}
         for label in y_train:
+
             if label in freq_dict.keys():
                 freq_dict[label] += 1
             else:
@@ -61,16 +108,19 @@ class NaiveBayesClassifier:
         self.posteriors = [{}] * len(X_train[0])
 
         for col_index in range(len(X_train[0])):
+            print("col index", col_index)
             self.posteriors[col_index] = {}
 
             # setup index's storage structure
             column = []
             for row_index in range(len(X_train)):
                 column.append(X_train[row_index][col_index])
+
             item_label_list, parallel_frequency_list = utils.find_frequency_of_each_element_in_list(column)
             for item in item_label_list:
                 self.posteriors[col_index][item] = {}
                 y_label_list, y_parallel_frequency_list = utils.find_frequency_of_each_element_in_list(y_train)
+
                 for y_label in y_label_list:
                     self.posteriors[col_index][item][y_label] = 0
                     

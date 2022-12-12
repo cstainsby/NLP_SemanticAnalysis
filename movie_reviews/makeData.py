@@ -24,7 +24,7 @@ def makeReviewLsts(category,fract):
     for i in range(tstNum):
         idx = random.randint(0,len(trainLst) - 1)
         tstLst.append(trainLst[idx])
-        trainLst.pop(idx);
+        trainLst.pop(idx)
     return trainLst, tstLst
 
 def makeBagOfWords(reviewLst):
@@ -69,8 +69,11 @@ def main():
     posBagOfWords = makeBagOfWords(pos)
     negBagOfWords = makeBagOfWords(neg)
 
-    writeFile('pos.txt',posBagOfWords)
-    writeFile('neg.txt',negBagOfWords)
+    writeFile('pos.txt',pos)
+    writeFile('neg.txt',neg)
+
+    writeFile('posWords.txt',posBagOfWords)
+    writeFile('negWords.txt',negBagOfWords)
     
     writeFile('posTst.txt',posTst)
     writeFile('negTst.txt',negTst)

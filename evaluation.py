@@ -3,56 +3,32 @@ import math
 
 import utils
 
-def train_test_split(X, y, test_size=0.33, random_state=None, shuffle=True):
-    """Split dataset into train and test sets based on a test set size.
+def confusion_matrix(y_true, y_pred, labels):
+    """Compute confusion matrix to evaluate the accuracy of a classification.
 
     Args:
-        X(list of list of obj): The list of samples
-            The shape of X is (n_samples, n_features)
-        y(list of obj): The target y values (parallel to X)
+        y_true(list of obj): The ground_truth target y values
             The shape of y is n_samples
-        test_size(float or int): float for proportion of dataset to be in test set (e.g. 0.33 for a 2:1 split)
-            or int for absolute number of instances to be in test set (e.g. 5 for 5 instances in test set)
-        random_state(int): integer used for seeding a random number generator for reproducible results
-            Use random_state to seed your random number generator
-                you can use the math module or use numpy for your generator
-                choose one and consistently use that generator throughout your code
-        shuffle(bool): whether or not to randomize the order of the instances before splitting
-            Shuffle the rows in X and y before splitting and be sure to maintain the parallel order of X and y!!
+        y_pred(list of obj): The predicted target y values (parallel to y_true)
+            The shape of y is n_samples
+        labels(list of str): The list of all possible target y labels used to index the matrix
 
     Returns:
-        X_train(list of list of obj): The list of training samples
-        X_test(list of list of obj): The list of testing samples
-        y_train(list of obj): The list of target y values for training (parallel to X_train)
-        y_test(list of obj): The list of target y values for testing (parallel to X_test)
+        matrix(list of list of int): Confusion matrix whose i-th row and j-th column entry
+            indicates the number of samples with true label being i-th class
+            and predicted label being j-th class
 
-    Note:
-        Loosely based on sklearn's train_test_split():
-            https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
+    Notes:
+        Loosely based on sklearn's confusion_matrix():
+            https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html
     """
-    X_train = []
-    y_train = []
-    X_test = []
-    y_test = []
+    confusion_matrix = [([0] * len(labels)) for i in range(len(labels))]
+    for i, predicted_value in enumerate(y_pred):
+        if predicted_value == 'None':
+            predicted_value = '0.0'
 
-    index_list = []
+        predicted_index = labels.index(predicted_value)
+        actual_index = labels.index(y_true[i])
+        confusion_matrix[actual_index][predicted_index] += 1
 
-    if shuffle:
-        index_list = utils.randomized_index_list(len(y), random_state)
-    else:
-        index_list = [i for i in range(len(y))]
-    
-    if type(test_size) is int:
-        test_size = float(test_size)/len(y)
-
-    for i, index in enumerate(index_list):
-        if i < len(y) - math.ceil(len(y) * test_size):
-            # while in the range of train data add to train list
-            X_train.append(X[index])
-            y_train.append(y[index])
-        else:
-            # while in test range, add to test list
-            X_test.append(X[index])
-            y_test.append(y[index])
-    
-    return X_train, X_test, y_train, y_test
+    return confusion_matrix 
