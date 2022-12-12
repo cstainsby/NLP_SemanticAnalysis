@@ -20,3 +20,15 @@ def find_frequency_of_each_element_in_list(input_list):
             parallel_frequency_list[existing_item_index] += 1
 
     return item_label_list, parallel_frequency_list
+
+def randomized_index_list(n, seed):
+    if seed is not None:
+        np.random.seed(seed + 1)
+    else:
+        np.random.seed(0)
+        
+    shuffled_index_list  = [i for i in range(n)]
+
+    np.random.shuffle(shuffled_index_list)
+
+    return shuffled_index_list
